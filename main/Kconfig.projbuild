@@ -1,0 +1,222 @@
+menu "HAMOWNIA2.0 config ESP32"
+
+    menu "Board GPIO pinout"
+
+        config GPIO_LED
+            int "LED pin number"
+            default 2
+            help
+                GPIO pin number for LED
+
+        config LORA_RS
+            int "LORA RS pin number"
+            default 4
+            help
+                GPIO pin number for LORA RS
+
+        config LORA_CS
+            int "LORA CS pin number"
+            default 5
+            help
+                GPIO pin number for LORA CS
+
+        config GPIO_RS
+            int "GPIO EXPANDER RESET pin number"
+            default 13
+            help
+                GPIO pin number for GPIO expander RESET
+
+        config GPIO_ABORT
+            int "GPIO ABORT pin number"
+            default 14
+            help
+                GPIO pin number for ABORT button
+        
+        config CAN_RX
+            int "CAN RX pin number"
+            default 16
+            help
+                GPIO pin number for CAN RX
+
+        config CAN_TX
+            int "CAN TX pin number"
+            default 17
+            help
+                GPIO pin number for CAN TX
+
+        config SPI_SCK
+            int "SPI SCK pin number"
+            default 18
+            help
+                GPIO pin number for SPI SCK
+        
+        config SPI_MISO
+            int "SPI MISO pin number"
+            default 19
+            help
+                GPIO pin number for SPI MISO
+
+        config I2C_SDA
+            int "I2C SDA pin number"
+            default 21
+            help
+                GPIO pin number for I2C SDA
+
+        config I2C_SCL
+            int "I2C SCL pin number"
+            default 22
+            help
+                GPIO pin number for I2C SCL
+
+        config SPI_MOSI
+            int "SPI MOSI pin number"
+            default 23
+            help
+                GPIO pin number for SPI MOSI
+
+        config BUZZER
+            int "BUZZER pin number"
+            default 25
+            help
+                GPIO pin number for BUZZER
+        
+        config IGNIT_FIRE_2
+            int "FIRE_2 pin number"
+            default 26
+            help
+                GPIO pin number for Igniter Fire 2
+
+        config IGNIT_FIRE_1
+            int "FIRE_1 pin number"
+            default 27
+            help
+                GPIO pin number for Igniter Fire 1
+        
+        config ARM
+            int "ARM pin number"
+            default 32
+            help
+                GPIO pin number for ARM
+
+        config SD_CS
+            int "SD CS pin number"
+            default 33
+            help
+                GPIO pin number for SD CS
+                
+        config IGNIT_CONT_1
+            int "IGNIT_CONT_1 pin number"
+            default 35
+            help
+                GPIO pin number for Igniter Continuity 1
+
+        config IGNIT_CONT_2
+            int "IGNIT_CONT_2 pin number"
+            default 34
+            help
+                GPIO pin number for Igniter Continuity 2
+        
+        config A_VBAT
+            int "A_VBAT pin number"
+            default 36
+            help
+                GPIO pin number for A_VBAT
+        
+        config LORA_D0
+            int "LORA D0 pin number"
+            default 39
+            help
+                GPIO pin number for LORA D0
+
+    endmenu
+
+    menu "ADC configuration"
+        
+        config A_VBAT_CHANNEL
+            int "A_VBAT ESP32 channel"
+            default 0
+            help
+                ADC Channel number for A_VBAT
+        
+        config A_IGNIT_CONT_1_CHANNEL
+            int "A_IGNIT_CONT_1 ESP32 channel"
+            default 6
+            help
+                ADC Channel number for A_IGNIT_CONT_1
+
+        config A_IGNIT_CONT_2_CHANNEL
+            int "A_IGNIT_CONT_2 ESP32 channel"
+            default 7
+            help
+                ADC Channel number for A_IGNIT_CONT_2
+
+    endmenu
+
+    menu "SPI configuration"
+
+        config SPI_HOST
+            int "Port Number"
+            default 0
+            help
+                Port number for SPI device.
+
+        config SPI_FREQUENCY
+            int "Master Frequency"
+            default 100000
+            help
+                SPI clock frequency device.
+    endmenu
+
+    menu "I2C configuration"
+
+        config I2C_MASTER_PORT_NUM
+            int "Port Number"
+            default 0
+            help
+                Port number for I2C Master device.
+
+        config I2C_MASTER_FREQUENCY
+            int "Master Frequency"
+            default 400000
+            help
+                I2C frequency of Master device.
+
+        config I2C_MASTER_TIMEOUT_MS
+            int "Master Timeout"
+            default 1000
+            help
+                Timeout of I2C Master device.
+
+        config I2C_PCA9574_ADDR
+            int "PCA9574 I2C address 0x20"
+            default 32
+            help
+                I2C address of PCA9574 device.
+
+        config I2C_MCP23018_ADDR
+            int "MCP23018 I2C address 0x27"
+            default 39
+            help
+                I2C address of MCP23018 device.
+
+        config I2C_ADS1115_ADDR
+            int "ADS1115 I2C address 0x49"
+            default 73
+            help
+                I2C address of ADS1115 device.
+
+        config I2C_TMP1075_TS1_ADDR
+            int "TMP1075 TS1 I2C address 0x4E"
+            default 78
+            help
+                I2C address of TMP1075 TS1 device.
+
+        config I2C_TMP1075_TS2_ADDR
+            int "TMP1075 TS2 I2C address 0x4F"
+            default 79
+            help
+                I2C address of TMP1075 TS2 device.
+
+    endmenu
+
+endmenu
