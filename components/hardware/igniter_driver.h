@@ -22,7 +22,6 @@
 
 typedef enum {
     IGNITER_STATE_WAITING = 0,
-    IGNITER_STATE_ARMED,
     IGNITER_STATE_FIRED,
 } igniter_state_t;
 
@@ -59,7 +58,6 @@ typedef struct {
     igniter_GPIO_set_level _gpio_set_level;
     igniter_delay _delay;
     uint8_t adc_channel_continuity;
-    uint8_t gpio_num_arm;
     uint8_t gpio_num_fire;
     igniter_drive_t drive;
     igniter_state_t state;
@@ -67,9 +65,6 @@ typedef struct {
 
 igniter_status_t igniter_check_continuity(igniter_struct_t* igniter, igniter_continuity_t* continuity);
 
-igniter_status_t igniter_arm(igniter_struct_t* igniter);
-
-igniter_status_t igniter_disarm(igniter_struct_t* igniter);
 
 igniter_status_t igniter_fire(igniter_struct_t* igniter);
 
