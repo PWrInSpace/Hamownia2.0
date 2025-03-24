@@ -16,12 +16,14 @@
 #include "sdcard.h"
 #include "igniter_driver.h"
 #include "buzzer_driver.h"
+#include "mcp23018.h"
 
 #include "pressure_driver.h"
 #include "solenoid_driver.h"
 
 // TANWA hardware
 typedef struct {
+    mcp23018_struct_t mcp23018;
     ads1115_struct_t ads1115;
     pca9574_struct_t pca9574;
     igniter_struct_t igniter[2];

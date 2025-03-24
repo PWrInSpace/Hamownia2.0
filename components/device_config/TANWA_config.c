@@ -21,6 +21,16 @@
 #define IOEXP_MODE (IOCON_INTCC | IOCON_INTPOL | IOCON_ODR | IOCON_MIRROR)
 
 TANWA_hardware_t TANWA_hardware = {
+    .mcp23018 = {
+        ._i2c_write = _mcu_i2c_write,
+        ._i2c_read = _mcu_i2c_read,
+        .i2c_address = CONFIG_I2C_MCP23018_ADDR,
+        .iocon = 0,
+        .dirRegisters = {0, 0},
+        .polRegisters = {0, 0},
+        .pullupRegisters = {0, 0},
+        .ports = {0, 0},
+    },
     .ads1115 = {
         ._i2c_write = _mcu_i2c_write,
         ._i2c_read = _mcu_i2c_read,
@@ -123,13 +133,13 @@ esp_err_t TANWA_hardware_init() {
     // } else {
     //     ESP_LOGI(TAG, "TMP1075 sensor 2 initialized");
     // }
-    // ret = mcp23018_init(&(TANWA_hardware.mcp23018), IOEXP_MODE);
-    // if (ret != MCP23018_OK) {
-    //     ESP_LOGE(TAG, "Failed to initialize MCP23018");
-    //     return ESP_FAIL;
-    // } else {
-    //     ESP_LOGI(TAG, "MCP23018 initialized");
-    // }
+    ret = mcp23018_init(&(TANWA_hardware.mcp23018), IOEXP_MODE);
+    if (ret != MCP23018_OK) {
+        ESP_LOGE(TAG, "Failed to initialize MCP23018");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGI(TAG, "MCP23018 initialized");
+    }
     ret = pca9574_init(&(TANWA_hardware.pca9574));
     if (ret != true) {
         ESP_LOGE(TAG, "Failed to initialize PCA9574");
