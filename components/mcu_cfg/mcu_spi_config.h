@@ -46,7 +46,8 @@
 
 typedef struct {
   spi_host_device_t host_id;
-  spi_device_handle_t spi_handle;
+  spi_device_handle_t spi_lora_handle;
+  spi_device_handle_t spi_ad7190_handle;
   spi_bus_config_t bus_config;
   spi_device_interface_config_t dev_config;
   bool spi_init_flag;
@@ -74,5 +75,17 @@ bool _lora_add_device(void);
  * \param[out] _out output buffer
  */
 bool _lora_spi_transmit(uint8_t _in[2], uint8_t _out[2]);
+
+
+bool _ad7190_add_device(void);  
+
+/**
+ * \brief SPI transmit function for AD7190
+ * \param[in] tx_data input buffer
+ * \param[in] tx_len length of input buffer
+ * \param[out] rx_data output buffer
+ * \param[in] rx_len length of output buffer
+ */
+bool _ad7190_spi_transmit(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len);
 
 #endif /* PWRINSPACE_MCU_SPI_CONFIG_H_ */

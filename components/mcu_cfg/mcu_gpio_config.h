@@ -15,6 +15,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "driver/gpio.h"
 #include "rom/gpio.h"
 #include "soc/gpio_struct.h"
@@ -29,6 +33,8 @@ typedef enum {
     ARM_GPIO = CONFIG_ARM,
     FIRE_1_GPIO = CONFIG_IGNIT_FIRE_1,
     FIRE_2_GPIO = CONFIG_IGNIT_FIRE_2,
+    AD7190_CS_GPIO = CONFIG_AD7190_CS,
+    SPI_RDY_GPIO = CONFIG_SPI_RDY,
 } mcu_gpio_cfg_t;
 
 typedef enum {
@@ -41,6 +47,8 @@ typedef enum {
     ARM_GPIO_INDEX,
     FIRE_1_GPIO_INDEX,
     FIRE_2_GPIO_INDEX,
+    AD7190_CS_GPIO_INDEX,
+    SPI_RDY_INDEX,
     MAX_GPIO_INDEX
 } mcu_gpio_index_cfg_t;
 
@@ -49,6 +57,8 @@ typedef struct {
     uint8_t num_pins;
     gpio_config_t configs[MAX_GPIO_INDEX];
 } mcu_gpio_config_t;
+
+extern TaskHandle_t ad7190_task_handle;
 
 esp_err_t mcu_gpio_init(void);
 
@@ -61,5 +71,8 @@ bool _lora_gpio_set_level(uint8_t gpio, uint8_t level);
 bool _lora_gpio_attach_d0_isr(gpio_isr_t interrupt_cb);
 
 bool _abort_gpio_attach_isr(gpio_isr_t interrupt_cb);
+
+bool _rdy_gpio_attach_isr(gpio_isr_t interrupt_cb);
+
 
 #endif /* PWRINSPACE_MCU_GPIO_CONFIG_H_ */

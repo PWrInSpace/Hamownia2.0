@@ -2,6 +2,17 @@ menu "HAMOWNIA2.0 config ESP32"
 
     menu "Board GPIO pinout"
 
+        config AD7190_CS
+            int "AD7190 CS pin number"
+            default 17
+            help
+                GPIO pin number for AD7190 CS
+                
+        config SPI_RDY
+            int "SPI RDY pin number"
+            default 4
+            help
+                GPIO pin number for SPI RDY
         config GPIO_LED
             int "LED pin number"
             default 2

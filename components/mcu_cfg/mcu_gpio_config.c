@@ -10,8 +10,17 @@
 
 #define TAG "MCU_GPIO"
 
+TaskHandle_t ad7190_task_handle = NULL;
+
+void IRAM_ATTR ad7190_rdy_isr_handler(void* arg) {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    xTaskNotifyFromISR(ad7190_task_handle, 0, eNoAction, &xHigherPriorityTaskWoken);
+    if (xHigherPriorityTaskWoken) {
+        portYIELD_FROM_ISR();
+    }
+}
 static mcu_gpio_config_t mcu_gpio_config = {
-    .pins = {LED_GPIO, LORA_RST_GPIO, LORA_CS_GPIO, LORA_D0_GPIO, ABORT_GPIO, BUZZER_GPIO, ARM_GPIO, FIRE_1_GPIO, FIRE_2_GPIO},
+    .pins = {LED_GPIO, LORA_RST_GPIO, LORA_CS_GPIO, LORA_D0_GPIO, ABORT_GPIO, BUZZER_GPIO, ARM_GPIO, FIRE_1_GPIO, FIRE_2_GPIO, AD7190_CS_GPIO, SPI_RDY_INDEX},
     .num_pins = MAX_GPIO_INDEX,
     .configs = {
         {
@@ -77,6 +86,20 @@ static mcu_gpio_config_t mcu_gpio_config = {
             .pull_down_en = GPIO_PULLDOWN_DISABLE,
             .intr_type = GPIO_INTR_DISABLE,
         },
+        {
+            .pin_bit_mask = (1ULL << AD7190_CS_GPIO),
+            .mode = GPIO_MODE_OUTPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE,
+        },
+        {
+            .pin_bit_mask = (1ULL << SPI_RDY_GPIO),
+            .mode = GPIO_MODE_INPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_NEGEDGE,
+        }
     },
 };
 
@@ -97,6 +120,11 @@ esp_err_t mcu_gpio_init() {
         if (!_mcu_gpio_set_level(mcu_gpio_config.pins[i], 0)) {
             ESP_LOGE(TAG, "GPIO pin %d level set failed!", i);
         }
+    }
+
+    if(_rdy_gpio_attach_isr(ad7190_rdy_isr_handler) == false) {
+        ESP_LOGE(TAG, "RDY GPIO ISR attach failed!");
+        return ESP_FAIL;
     }
 
     return res;
@@ -139,4 +167,24 @@ bool _abort_gpio_attach_isr(gpio_isr_t interrupt_cb) {
         return false;
     }
     return true;
+}
+
+bool _rdy_gpio_attach_isr(gpio_isr_t interrupt_cb) {
+    esp_err_t res = ESP_OK;
+    res = gpio_install_isr_service(0);
+    if (res != ESP_OK) {
+        ESP_LOGE(TAG, "GPIO ISR service installation failed!");
+        return false;
+    }
+    res = gpio_isr_handler_add(SPI_RDY_GPIO, interrupt_cb, NULL);
+    if (res != ESP_OK) {
+        ESP_LOGE(TAG, "GPIO ISR handler add failed!");
+        return false;
+    }
+    return true;
+}
+
+
+TaskHandle_t get_ad7190_task_handle(void) {
+    return ad7190_task_handle;
 }

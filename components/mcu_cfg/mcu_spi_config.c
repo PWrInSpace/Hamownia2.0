@@ -38,7 +38,8 @@ esp_err_t mcu_spi_deinit(void) {
     if (!spi_config.spi_init_flag) {
       return ESP_OK;
     }
-    ret = spi_bus_remove_device(spi_config.spi_handle);
+    ret = spi_bus_remove_device(spi_config.spi_lora_handle);
+    ret = spi_bus_remove_device(spi_config.spi_ad7190_handle);
     ESP_ERROR_CHECK(ret);
     ret = spi_bus_free(spi_config.host_id);
     ESP_ERROR_CHECK(ret);
@@ -55,7 +56,7 @@ bool _lora_add_device(void) {
                                          .queue_size = 1,
                                          .flags = 0,
                                          .pre_cb = NULL};
-    ret = spi_bus_add_device(spi_config.host_id, &dev, &spi_config.spi_handle);
+    ret = spi_bus_add_device(spi_config.host_id, &dev, &spi_config.spi_lora_handle);
     ESP_ERROR_CHECK(ret);
 
     return ret == ESP_OK ? true : false;
@@ -68,8 +69,38 @@ bool _lora_spi_transmit(uint8_t _in[2], uint8_t _out[2]) {
                           .rx_buffer = _in};
     xSemaphoreTake(mutex_spi, portMAX_DELAY);
     _mcu_gpio_set_level(LORA_CS_GPIO_INDEX, 0);
-    spi_device_transmit(spi_config.spi_handle, &t);
+    spi_device_transmit(spi_config.spi_lora_handle, &t);
     _mcu_gpio_set_level(LORA_CS_GPIO_INDEX, 1);
     xSemaphoreGive(mutex_spi);
     return true;
+}
+
+bool _ad7190_add_device(void) {
+  esp_err_t ret;
+
+  spi_device_interface_config_t dev = {.clock_speed_hz = 5000000,
+                                       .mode = 3,
+                                       .spics_io_num = -1,
+                                       .queue_size = 1,
+                                       .flags = 0,
+                                       .pre_cb = NULL};
+  ret = spi_bus_add_device(spi_config.host_id, &dev, &spi_config.spi_ad7190_handle);
+  ESP_ERROR_CHECK(ret);
+
+  return ret == ESP_OK;
+}             
+
+
+bool _ad7190_spi_transmit(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
+  spi_transaction_t t = {.flags = 0,
+                        .length = 8 * sizeof(uint8_t) * tx_len,
+                        .tx_buffer = tx_data,
+                        .rxlength = 8 * sizeof(uint8_t) * rx_len,
+                        .rx_buffer = rx_data};
+  xSemaphoreTake(mutex_spi, portMAX_DELAY);
+  _mcu_gpio_set_level(AD7190_CS_GPIO_INDEX, 0);
+  spi_device_transmit(spi_config.spi_ad7190_handle, &t);
+  _mcu_gpio_set_level(AD7190_CS_GPIO_INDEX, 1);
+  xSemaphoreGive(mutex_spi);
+  return true;
 }

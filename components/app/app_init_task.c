@@ -23,6 +23,8 @@
 #include "timers_config.h"
 #include "TANWA_config.h"
 
+#include "ad7190_task.h"
+
 #include "sd_task.h"
 
 
@@ -159,6 +161,13 @@ void app_init_task(void* pvParameters) {
   // } else {
   //   ESP_LOGI(TAG, "Abort button initialized");
   // }
-
+  if(ad7190_prepare() == false)
+  {
+      ESP_LOGE(TAG, "AD7190 initialization failed");
+  }
+  else
+  {
+      ESP_LOGI(TAG, "AD7190 initialized");
+  }
   vTaskDelete(NULL);
 }
