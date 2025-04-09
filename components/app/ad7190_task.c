@@ -10,19 +10,19 @@
 void ad7190_read_cont_data(void* pvParameters) {
 
     ad7190_data_t ad7190_data;
-
+    uint8_t* spi_rdy_lvl = 0;
     while (1) {
-        
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-        
-        if(ad7190_get_data(&ad7190_data))
+        _mcu_gpio_get_level(SPI_RDY_INDEX, spi_rdy_lvl);
+        if(*spi_rdy_lvl == 1)
         {
-            ESP_LOGI(TAG, "AD7190 data: %d", ad7190_data.raw_data);
-        }
-        else
-        {
-            ESP_LOGE(TAG, "AD7190 read data failed");
+            if(ad7190_get_data(&ad7190_data))
+            {
+                ESP_LOGI(TAG, "AD7190 data: %d", ad7190_data.raw_data);
+            }
+            else
+            {
+                ESP_LOGE(TAG, "AD7190 read data failed");
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(10));
     }

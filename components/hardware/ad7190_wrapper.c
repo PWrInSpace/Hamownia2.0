@@ -5,10 +5,30 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <stdbool.h>
+#include "mcu_spi_config.h"
 
 
 static void ad7190_delay_fnc(uint32_t millis) {
     vTaskDelay(pdMS_TO_TICKS(millis));
+}
+
+bool _ad7190_write_data(uint8_t* tx_data, size_t tx_len)
+{
+    if(_ad7190_spi_transmit(tx_data, tx_len, NULL, 0) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+bool _ad7190_read_data(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len)
+{
+    if(_ad7190_spi_transmit(tx_data, tx_len, rx_data, rx_len) == false)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 static struct {
@@ -56,3 +76,5 @@ bool ad7190_write_data(uint8_t* rx_data, size_t rx_len) {
 bool ad7190_read_data(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
     return _ad7190_read_data(tx_data, tx_len, rx_data, rx_len);
 }
+
+//TODO: tu bedzie jeszcze funckja do przeliczania raw_data na nacisk
