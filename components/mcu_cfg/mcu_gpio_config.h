@@ -72,7 +72,6 @@ bool _lora_gpio_attach_d0_isr(gpio_isr_t interrupt_cb);
 
 bool _abort_gpio_attach_isr(gpio_isr_t interrupt_cb);
 
-bool _rdy_gpio_attach_isr(gpio_isr_t interrupt_cb);
-
+bool _rdy_gpio_attach_isr(void (*handler)(void*), void* arg);
 
 #endif /* PWRINSPACE_MCU_GPIO_CONFIG_H_ */

@@ -10,17 +10,8 @@
 
 #define TAG "MCU_GPIO"
 
-TaskHandle_t ad7190_task_handle = NULL;
-
-void IRAM_ATTR ad7190_rdy_isr_handler(void* arg) {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xTaskNotifyFromISR(ad7190_task_handle, 0, eNoAction, &xHigherPriorityTaskWoken);
-    if (xHigherPriorityTaskWoken) {
-        portYIELD_FROM_ISR();
-    }
-}
 static mcu_gpio_config_t mcu_gpio_config = {
-    .pins = {LED_GPIO, LORA_RST_GPIO, LORA_CS_GPIO, LORA_D0_GPIO, ABORT_GPIO, BUZZER_GPIO, ARM_GPIO, FIRE_1_GPIO, FIRE_2_GPIO, AD7190_CS_GPIO, SPI_RDY_INDEX},
+    .pins = {LED_GPIO, LORA_RST_GPIO, LORA_CS_GPIO, LORA_D0_GPIO, ABORT_GPIO, BUZZER_GPIO, ARM_GPIO, FIRE_1_GPIO, FIRE_2_GPIO, AD7190_CS_GPIO, SPI_RDY_GPIO},
     .num_pins = MAX_GPIO_INDEX,
     .configs = {
         {
@@ -122,11 +113,6 @@ esp_err_t mcu_gpio_init() {
         }
     }
 
-    if(_rdy_gpio_attach_isr(ad7190_rdy_isr_handler) == false) {
-        ESP_LOGE(TAG, "RDY GPIO ISR attach failed!");
-        return ESP_FAIL;
-    }
-
     return res;
 }
 
@@ -136,7 +122,7 @@ bool _mcu_gpio_set_level(uint8_t gpio, uint8_t level) {
 }
 
 bool _mcu_gpio_get_level(uint8_t gpio, uint8_t* level) {
-    *level = (uint8_t) gpio_get_level(mcu_gpio_config.pins[gpio]);;
+    *level = (uint8_t) gpio_get_level(mcu_gpio_config.pins[gpio]);
     return true;
 }
 
@@ -169,22 +155,19 @@ bool _abort_gpio_attach_isr(gpio_isr_t interrupt_cb) {
     return true;
 }
 
-bool _rdy_gpio_attach_isr(gpio_isr_t interrupt_cb) {
-    esp_err_t res = ESP_OK;
-    res = gpio_install_isr_service(0);
-    if (res != ESP_OK) {
+
+bool _rdy_gpio_attach_isr(void (*handler)(void*), void* arg) {
+    esp_err_t res = gpio_install_isr_service(0);
+    if (res != ESP_OK && res != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "GPIO ISR service installation failed!");
         return false;
     }
-    res = gpio_isr_handler_add(SPI_RDY_GPIO, interrupt_cb, NULL);
+
+    res = gpio_isr_handler_add(SPI_RDY_GPIO, handler, arg);
     if (res != ESP_OK) {
         ESP_LOGE(TAG, "GPIO ISR handler add failed!");
         return false;
     }
+
     return true;
-}
-
-
-TaskHandle_t get_ad7190_task_handle(void) {
-    return ad7190_task_handle;
 }

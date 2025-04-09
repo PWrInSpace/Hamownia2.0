@@ -135,6 +135,14 @@ void app_init_task(void* pvParameters) {
   //   ESP_LOGI(TAG, "### LoRa initialization success ###");
   // }
 
+  if(ad7190_prepare() == false)
+  {
+      ESP_LOGE(TAG, "AD7190 initialization failed");
+  }
+  else
+  {
+      ESP_LOGI(TAG, "AD7190 initialized");
+  }
   ESP_LOGI(TAG, "### App initialization finished ###");
 
   // ESP_LOGI(TAG, "Starting console...");
@@ -161,13 +169,7 @@ void app_init_task(void* pvParameters) {
   // } else {
   //   ESP_LOGI(TAG, "Abort button initialized");
   // }
-  if(ad7190_prepare() == false)
-  {
-      ESP_LOGE(TAG, "AD7190 initialization failed");
-  }
-  else
-  {
-      ESP_LOGI(TAG, "AD7190 initialized");
-  }
+  ad7190_init_task();
+
   vTaskDelete(NULL);
 }
