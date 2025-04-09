@@ -1,7 +1,6 @@
 // 06.04.2025 Bart3kTK
 
 #include "ad7190.h"
-#include "mcu_spi_config.h"
 
 bool _ad7190_init(ad7190_t* dev)
 {
@@ -216,25 +215,6 @@ bool _ad7190_set_continuous_mode(ad7190_t* dev)
     }
 
     dev->delay_func(10); // 10 ms delay for setup (in data sheet 5 ms, but 10 ms is more stable)
-
-    return true;
-}
-
-bool _ad7190_write_data(uint8_t* tx_data, size_t tx_len)
-{
-    if(_ad7190_spi_transmit(tx_data, tx_len, NULL, 0) == false)
-    {
-        return false;
-    }
-
-    return true;
-}
-bool _ad7190_read_data(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len)
-{
-    if(_ad7190_spi_transmit(tx_data, tx_len, rx_data, rx_len) == false)
-    {
-        return false;
-    }
 
     return true;
 }
