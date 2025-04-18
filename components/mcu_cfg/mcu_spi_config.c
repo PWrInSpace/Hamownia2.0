@@ -93,14 +93,19 @@ bool _ad7190_add_device(void) {
 
 bool _ad7190_spi_transmit(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
   spi_transaction_t t = {.flags = 0,
-                        .length = 8 * sizeof(uint8_t) * tx_len,
-                        .tx_buffer = tx_data,
-                        .rxlength = 8 * sizeof(uint8_t) * rx_len,
-                        .rx_buffer = rx_data};
+                          .length = 8 * sizeof(uint8_t) * tx_len,
+                          .tx_buffer = tx_data,
+                          .rxlength = 8 * sizeof(uint8_t) * rx_len,
+                          .rx_buffer = rx_data};
   xSemaphoreTake(mutex_spi, portMAX_DELAY);
   _mcu_gpio_set_level(AD7190_CS_GPIO_INDEX, 0);
-  spi_device_transmit(spi_config.spi_ad7190_handle, &t);
+  esp_err_t res = spi_device_transmit(spi_config.spi_ad7190_handle, &t);
   _mcu_gpio_set_level(AD7190_CS_GPIO_INDEX, 1);
   xSemaphoreGive(mutex_spi);
+  if (res != ESP_OK) {
+      ESP_LOGE(TAG, "SPI transmission failed: %s", esp_err_to_name(res));
+      return false;
+  }
+
   return true;
 }

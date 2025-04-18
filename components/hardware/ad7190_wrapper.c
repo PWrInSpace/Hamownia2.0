@@ -5,10 +5,41 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <stdbool.h>
+#include "mcu_spi_config.h"
+#include "esp_log.h"
+
+#define TAG "AD7190_WRAPPER"
 
 
-static void ad7190_delay_fnc(uint32_t millis) {
+void ad7190_delay_fnc(uint32_t millis) {
     vTaskDelay(pdMS_TO_TICKS(millis));
+}
+
+bool _ad7190_write_data(uint8_t* tx_data, size_t tx_len)
+{
+    ESP_LOGD(TAG, "start transmit data to SPI");
+
+    if(_ad7190_spi_transmit(tx_data, tx_len, NULL, 0) == false)
+    {
+        return false;
+    }
+
+    ESP_LOGD(TAG, "transmit data to SPI done");
+
+    return true;
+}
+bool _ad7190_read_data(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len)
+{
+    ESP_LOGI(TAG, "start read data from SPI");
+
+    if(_ad7190_spi_transmit(tx_data, tx_len, rx_data, rx_len) == false)
+    {
+        return false;
+    }
+
+    ESP_LOGD(TAG, "read data from SPI done");
+
+    return true;
 }
 
 static struct {
@@ -21,7 +52,6 @@ bool ad7190_init(void) {
     gb.dev.read_func = _ad7190_read_data;
     gb.dev.write_func = _ad7190_write_data;
     gb.dev.delay_func = ad7190_delay_fnc;
-
     return _ad7190_init(&gb.dev);
 }
 
@@ -56,3 +86,5 @@ bool ad7190_write_data(uint8_t* rx_data, size_t rx_len) {
 bool ad7190_read_data(const uint8_t* tx_data, size_t tx_len, uint8_t* rx_data, size_t rx_len) {
     return _ad7190_read_data(tx_data, tx_len, rx_data, rx_len);
 }
+
+//TODO: tu bedzie jeszcze funckja do przeliczania raw_data na nacisk

@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include "ad7190.h"
 
+void ad7190_delay_fnc(uint32_t millis);
+
 bool ad7190_init(void);
 
 bool ad7190_check_id(void);
