@@ -21,25 +21,10 @@
 #define IOEXP_MODE (IOCON_INTCC | IOCON_INTPOL | IOCON_ODR | IOCON_MIRROR)
 
 TANWA_hardware_t TANWA_hardware = {
-    .mcp23018 = {
-        ._i2c_write = _mcu_i2c_write,
-        ._i2c_read = _mcu_i2c_read,
-        .i2c_address = CONFIG_I2C_MCP23018_ADDR,
-        .iocon = 0,
-        .dirRegisters = {0, 0},
-        .polRegisters = {0, 0},
-        .pullupRegisters = {0, 0},
-        .ports = {0, 0},
-    },
     .ads1115 = {
         ._i2c_write = _mcu_i2c_write,
         ._i2c_read = _mcu_i2c_read,
         .i2c_address = CONFIG_I2C_ADS1115_ADDR,
-    },
-    .pca9574 = {
-        ._i2c_write = _mcu_i2c_write,
-        ._i2c_read = _mcu_i2c_read,
-        .i2c_address = CONFIG_I2C_PCA9574_ADDR,
     },
     .igniter = {
         {
@@ -60,13 +45,6 @@ TANWA_hardware_t TANWA_hardware = {
             .drive = IGNITER_DRIVE_POSITIVE,
             .state = IGNITER_STATE_WAITING,
         },
-    },
-    .buzzer = {
-        ._gpio_set_level = _mcu_gpio_set_level,
-        ._delay = _buzzer_delay_ms,
-        .gpio_idx = BUZZER_GPIO_INDEX,
-        .polarity = BUZZER_POLARITY_ACTIVE_HIGH,
-        .state = BUZZER_STATE_OFF,
     },
 };
 

@@ -162,13 +162,6 @@ void app_init_task(void* pvParameters) {
   // vTaskDelay(pdMS_TO_TICKS(100));
   // run_esp_now_task();
 
-  // ESP_LOGI(TAG, "Initializating abort button...");
-  // ret |= abort_button_init();
-  // if (ret != ABORT_BUTTON_OK) {
-  //   ESP_LOGE(TAG, "Abort button initialization failed");
-  // } else {
-  //   ESP_LOGI(TAG, "Abort button initialized");
-  // }
   ad7190_init_task();
 
   vTaskDelete(NULL);
