@@ -32,7 +32,6 @@ menu "HAMOWNIA2.0 config ESP32"
             help
                 GPIO pin number for GPIO expander RESET
 
-        
         config CAN_RX
             int "CAN RX pin number"
             default 35
@@ -88,31 +87,29 @@ menu "HAMOWNIA2.0 config ESP32"
             help
                 GPIO pin number for Igniter Fire 1
         
-
         config SD_CS
             int "SD CS pin number"
             default 18
             help
                 GPIO pin number for SD CS
-                
-        config IGNIT_CONT_1
-            int "IGNIT_CONT_1 pin number"
-            default 12
-            help
-                GPIO pin number for Igniter Continuity 1
 
-        config IGNIT_CONT_2
-            int "IGNIT_CONT_2 pin number"
-            default 10
-            help
-                GPIO pin number for Igniter Continuity 2
-        
-        
         config LORA_D0
             int "LORA D0 pin number"
             default 16
             help
                 GPIO pin number for LORA D0
+
+        config VALVE1_PWM_PIN
+            int "Valve1 pwm pin number"
+            default 14
+            help
+                GPIO pin number for pwm for valve
+
+        config VALVE2_PWM_PIN
+            int "Valve2 pwm pin number"
+            default 21
+            help
+                GPIO pin number for pwm for valve
 
     endmenu
 

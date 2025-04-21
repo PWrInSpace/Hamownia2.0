@@ -19,6 +19,7 @@
 #include "esp_adc/adc_cali.h"
 #include "esp_adc/adc_cali_scheme.h"
 #include "esp_adc/adc_oneshot.h"
+#include "esp_adc/adc_continuous.h"
 #include "soc/adc_channel.h"
 
 #define READ_ERROR_RETURN_VAL 0xFFFF
@@ -26,14 +27,12 @@
 #define MAX_ADC_CHANNELS 8
 
 typedef enum {
-  VBAT_CHANNEL = ADC_CHANNEL_0,
-  IGNITER_1_CHANNEL = ADC_CHANNEL_6,
-  IGNITER_2_CHANNEL = ADC_CHANNEL_7
+  IGNITER_1_CHANNEL = ADC_CHANNEL_5, //IO12 IGNIT_CONT_1
+  IGNITER_2_CHANNEL = ADC_CHANNEL_9, //IO10 IGNIT_CONT_2
 } mcu_adc_chan_cfg_t;
 
 typedef enum {
-  VBAT_CHANNEL_INDEX = 0,
-  IGNITER_1_CHANNEL_INDEX,
+  IGNITER_1_CHANNEL_INDEX = 0,
   IGNITER_2_CHANNEL_INDEX,
   MAX_CHANNEL_INDEX
 } mcu_adc_chan_index_cfg_t;

@@ -56,12 +56,12 @@ TANWA_utility_t TANWA_utility = {
 esp_err_t TANWA_mcu_config_init() {
     esp_err_t ret = ESP_OK;
     ret |= mcu_spi_init();
-    // if (ret != ESP_OK) {
-    //     ESP_LOGE(TAG, "Failed to initialize SPI");
-    //     return ret;
-    // } else {
-    //     ESP_LOGI(TAG, "SPI initialized");
-    // }
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize SPI");
+        return ret;
+    } else {
+        ESP_LOGI(TAG, "SPI initialized");
+    }
     ret |= mcu_gpio_init();
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize GPIO");
@@ -228,12 +228,12 @@ esp_err_t TANWA_esp_now_init() {
 //     return ESP_OK;
 // }
 
-esp_err_t TANWA_get_vbat(float* vbat){
-    float voltage;
-    if (!_mcu_adc_read_voltage(VBAT_CHANNEL_INDEX, &voltage)) {
-        ESP_LOGE(TAG, "Failed to read VBAT voltage");
-        return ESP_FAIL;
-    }
-    *vbat = voltage * 6.26335877863f; // (10k + 50k) / 10k (voltage divider)
-    return ESP_OK;
-}
+// esp_err_t (float* vbat){
+//     float voltage;
+//     if (!_mcu_adc_read_voltage(VBAT_CHANNEL_INDEX, &voltage)) {
+//         ESP_LOGE(TAG, "Failed to read VBAT voltage");
+//         return ESP_FAIL;
+//     }
+//     *vbat = voltage * 6.26335877863f; // (10k + 50k) / 10k (voltage divider)
+//     return ESP_OK;
+// }
