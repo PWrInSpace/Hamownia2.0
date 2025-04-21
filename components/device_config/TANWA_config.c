@@ -21,25 +21,10 @@
 #define IOEXP_MODE (IOCON_INTCC | IOCON_INTPOL | IOCON_ODR | IOCON_MIRROR)
 
 TANWA_hardware_t TANWA_hardware = {
-    .mcp23018 = {
-        ._i2c_write = _mcu_i2c_write,
-        ._i2c_read = _mcu_i2c_read,
-        .i2c_address = CONFIG_I2C_MCP23018_ADDR,
-        .iocon = 0,
-        .dirRegisters = {0, 0},
-        .polRegisters = {0, 0},
-        .pullupRegisters = {0, 0},
-        .ports = {0, 0},
-    },
     .ads1115 = {
         ._i2c_write = _mcu_i2c_write,
         ._i2c_read = _mcu_i2c_read,
         .i2c_address = CONFIG_I2C_ADS1115_ADDR,
-    },
-    .pca9574 = {
-        ._i2c_write = _mcu_i2c_write,
-        ._i2c_read = _mcu_i2c_read,
-        .i2c_address = CONFIG_I2C_PCA9574_ADDR,
     },
     .igniter = {
         {
@@ -61,13 +46,6 @@ TANWA_hardware_t TANWA_hardware = {
             .state = IGNITER_STATE_WAITING,
         },
     },
-    .buzzer = {
-        ._gpio_set_level = _mcu_gpio_set_level,
-        ._delay = _buzzer_delay_ms,
-        .gpio_idx = BUZZER_GPIO_INDEX,
-        .polarity = BUZZER_POLARITY_ACTIVE_HIGH,
-        .state = BUZZER_STATE_OFF,
-    },
 };
 
 TANWA_utility_t TANWA_utility = {
@@ -78,12 +56,12 @@ TANWA_utility_t TANWA_utility = {
 esp_err_t TANWA_mcu_config_init() {
     esp_err_t ret = ESP_OK;
     ret |= mcu_spi_init();
-    // if (ret != ESP_OK) {
-    //     ESP_LOGE(TAG, "Failed to initialize SPI");
-    //     return ret;
-    // } else {
-    //     ESP_LOGI(TAG, "SPI initialized");
-    // }
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize SPI");
+        return ret;
+    } else {
+        ESP_LOGI(TAG, "SPI initialized");
+    }
     ret |= mcu_gpio_init();
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize GPIO");
@@ -250,12 +228,12 @@ esp_err_t TANWA_esp_now_init() {
 //     return ESP_OK;
 // }
 
-esp_err_t TANWA_get_vbat(float* vbat){
-    float voltage;
-    if (!_mcu_adc_read_voltage(VBAT_CHANNEL_INDEX, &voltage)) {
-        ESP_LOGE(TAG, "Failed to read VBAT voltage");
-        return ESP_FAIL;
-    }
-    *vbat = voltage * 6.26335877863f; // (10k + 50k) / 10k (voltage divider)
-    return ESP_OK;
-}
+// esp_err_t (float* vbat){
+//     float voltage;
+//     if (!_mcu_adc_read_voltage(VBAT_CHANNEL_INDEX, &voltage)) {
+//         ESP_LOGE(TAG, "Failed to read VBAT voltage");
+//         return ESP_FAIL;
+//     }
+//     *vbat = voltage * 6.26335877863f; // (10k + 50k) / 10k (voltage divider)
+//     return ESP_OK;
+// }

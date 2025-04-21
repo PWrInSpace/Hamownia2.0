@@ -10,8 +10,8 @@
 #define TAG "MCU_ADC"
 
 static mcu_adc_config_t mcu_adc_config = {                                                        
-  .adc_cal = {1.0f, 5.742f, 5.180f},                     
-  .adc_chan = {VBAT_CHANNEL, IGNITER_1_CHANNEL, IGNITER_2_CHANNEL}, 
+  .adc_cal = {5.742f, 5.180f}, //TODO: Skalibrować ADC
+  .adc_chan = {IGNITER_1_CHANNEL, IGNITER_2_CHANNEL},
   .adc_chan_num = MAX_CHANNEL_INDEX,
   .oneshot_unit_init_cfg = {                                  
     .unit_id = ADC_UNIT_1,                               

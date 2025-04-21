@@ -11,16 +11,9 @@
 #define TAG "MCU_GPIO"
 
 static mcu_gpio_config_t mcu_gpio_config = {
-    .pins = {LED_GPIO, LORA_RST_GPIO, LORA_CS_GPIO, LORA_D0_GPIO, ABORT_GPIO, BUZZER_GPIO, ARM_GPIO, FIRE_1_GPIO, FIRE_2_GPIO, AD7190_CS_GPIO, SPI_RDY_GPIO},
+    .pins = {LORA_RST_GPIO, LORA_CS_GPIO, LORA_D0_GPIO, FIRE_1_GPIO, FIRE_2_GPIO, AD7190_CS_GPIO, SPI_RDY_GPIO},
     .num_pins = MAX_GPIO_INDEX,
     .configs = {
-        {
-            .pin_bit_mask = (1ULL << LED_GPIO),
-            .mode = GPIO_MODE_OUTPUT_OD,
-            .pull_up_en = GPIO_PULLUP_DISABLE,
-            .pull_down_en = GPIO_PULLDOWN_DISABLE,
-            .intr_type = GPIO_INTR_DISABLE,
-        },
         {
             .pin_bit_mask = (1ULL << LORA_RST_GPIO),
             .mode = GPIO_MODE_OUTPUT,
@@ -41,27 +34,6 @@ static mcu_gpio_config_t mcu_gpio_config = {
             .pull_up_en = GPIO_PULLUP_DISABLE,
             .pull_down_en = GPIO_PULLDOWN_ENABLE,
             .intr_type = GPIO_INTR_POSEDGE,
-        },
-        {
-            .pin_bit_mask = (1ULL << ABORT_GPIO),
-            .mode = GPIO_MODE_INPUT,
-            .pull_up_en = GPIO_PULLUP_DISABLE,
-            .pull_down_en = GPIO_PULLDOWN_DISABLE,
-            .intr_type = GPIO_INTR_NEGEDGE,
-        },
-        {
-            .pin_bit_mask = (1ULL << BUZZER_GPIO),
-            .mode = GPIO_MODE_OUTPUT,
-            .pull_up_en = GPIO_PULLUP_DISABLE,
-            .pull_down_en = GPIO_PULLDOWN_DISABLE,
-            .intr_type = GPIO_INTR_DISABLE,
-        },
-        {
-            .pin_bit_mask = (1ULL << ARM_GPIO),
-            .mode = GPIO_MODE_OUTPUT,
-            .pull_up_en = GPIO_PULLUP_DISABLE,
-            .pull_down_en = GPIO_PULLDOWN_DISABLE,
-            .intr_type = GPIO_INTR_DISABLE,
         },
         {
             .pin_bit_mask = (1ULL << FIRE_1_GPIO),
@@ -138,16 +110,6 @@ bool _lora_gpio_attach_d0_isr(gpio_isr_t interrupt_cb) {
         return false;
     }
     res = gpio_isr_handler_add(LORA_D0_GPIO, interrupt_cb, NULL); 
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "GPIO ISR handler add failed!");
-        return false;
-    }
-    return true;
-}
-
-bool _abort_gpio_attach_isr(gpio_isr_t interrupt_cb) {
-    esp_err_t res = ESP_OK;
-    res = gpio_isr_handler_add(ABORT_GPIO, interrupt_cb, NULL);
     if (res != ESP_OK) {
         ESP_LOGE(TAG, "GPIO ISR handler add failed!");
         return false;

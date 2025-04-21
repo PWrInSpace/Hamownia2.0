@@ -36,24 +36,12 @@ void on_buzzer_timer(void *arg){
     }
 }
 
-void on_abort_button_timer(void *arg){
-    // Check the state of the button pin
-    uint8_t level;
-    _mcu_gpio_get_level(ABORT_GPIO_INDEX, &level);
-    if (level == 0) {
-        ESP_LOGW(TAG, "ABORT BUTTON PRESSED!");
-        // Handle the button press event (e.g., send a message to a task)
-        // state_machine_force_change_state(ABORT);
-    }
-    // Re-enable the interrupt
-    gpio_intr_enable(ABORT_GPIO);
-}
+
 
 bool initialize_timers(void) {
     sys_timer_t timers[] = {
     {.timer_id = TIMER_SD_DATA, .timer_callback_fnc = on_sd_timer, .timer_arg = NULL},
     {.timer_id = TIMER_BUZZER, .timer_callback_fnc = on_buzzer_timer, .timer_arg = NULL},
-    {.timer_id = TIMER_ABORT_BUTTON, .timer_callback_fnc = on_abort_button_timer, .timer_arg = NULL}
     };
     return sys_timer_init(timers, sizeof(timers) / sizeof(timers[0]));
 }

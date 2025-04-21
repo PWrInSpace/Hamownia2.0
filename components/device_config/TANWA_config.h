@@ -53,6 +53,6 @@ esp_err_t TANWA_esp_now_init();
 
 // esp_err_t TANWA_get_utility(TANWA_utility_t** utility);
 
-esp_err_t TANWA_get_vbat(float* vbat);
+// esp_err_t TANWA_get_vbat(float* vbat);
 
 #endif /* PWRINSPACE_TANWA_CONFIG_H_*/
